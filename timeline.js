@@ -66,7 +66,8 @@ fetch('data.json')
             }
           },
           y: {
-            beginAtZero: false,
+            min: 15,
+            max: 25,
             title: {
               display: true,
               text: 'Values'
