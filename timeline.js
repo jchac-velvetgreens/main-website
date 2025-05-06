@@ -37,7 +37,7 @@ fetch('data.json')
       },
       options: {
         animation: {
-          duration: 500,
+          duration: 125,
           easing: 'easeOutQuad'
         },
         responsive: true,
@@ -104,5 +104,5 @@ function animateNextPoint() {
 
     chart.update();
     currentIndex++;
-  }, 500);
+  }, 125);
 }
