@@ -67,7 +67,7 @@ fetch('data.json')
           },
           y: {
             min: 15,
-            max: 25,
+            max: 45,
             title: {
               display: true,
               text: 'Values'
