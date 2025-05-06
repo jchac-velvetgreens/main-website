@@ -16,7 +16,7 @@ fetch('data.json')
       data: {
         datasets: [
           {
-            label: 'Metric 1',
+            label: 'Value',
             data: [],
             borderColor: 'rgba(75, 192, 192, 1)',
             backgroundColor: 'rgba(75, 192, 192, 0.1)',
@@ -25,7 +25,7 @@ fetch('data.json')
             tension: 0.3,
           },
           {
-            label: 'Metric 2',
+            label: 'Smooth',
             data: [],
             borderColor: 'rgba(255, 99, 132, 1)',
             backgroundColor: 'rgba(255, 99, 132, 0.1)',
@@ -66,7 +66,7 @@ fetch('data.json')
             }
           },
           y: {
-            beginAtZero: true,
+            beginAtZero: false,
             title: {
               display: true,
               text: 'Values'
