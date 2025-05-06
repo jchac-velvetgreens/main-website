@@ -1,54 +1,108 @@
+let chart;
+let currentIndex = 0;
+let allData = [];
+
+// Load data
 fetch('data.json')
   .then(response => response.json())
   .then(data => {
-    const ctx = document.getElementById('timelineChart').getContext('2d');
-    
-    const chartData = {
-      labels: [],
-      datasets: [{
-        label: 'Sensor Value',
-        data: [],
-        fill: false,
-        borderColor: 'rgba(75, 192, 192, 1)',
-        tension: 0.1
-      }]
-    };
+    // Clean data: filter out entries with invalid timestamps
+    allData = data.filter(d => d.timestamp && !isNaN(new Date(d.timestamp)));
 
-    const config = {
+    // Create chart
+    const ctx = document.getElementById('timelineChart').getContext('2d');
+    chart = new Chart(ctx, {
       type: 'line',
-      data: chartData,
+      data: {
+        datasets: [
+          {
+            label: 'Metric 1',
+            data: [],
+            borderColor: 'rgba(75, 192, 192, 1)',
+            backgroundColor: 'rgba(75, 192, 192, 0.1)',
+            borderWidth: 2,
+            pointRadius: 3,
+            tension: 0.3,
+          },
+          {
+            label: 'Metric 2',
+            data: [],
+            borderColor: 'rgba(255, 99, 132, 1)',
+            backgroundColor: 'rgba(255, 99, 132, 0.1)',
+            borderWidth: 2,
+            pointRadius: 3,
+            tension: 0.3,
+          }
+        ]
+      },
       options: {
-        animation: false,
+        animation: {
+          duration: 500,
+          easing: 'easeOutQuad'
+        },
+        responsive: true,
+        plugins: {
+          legend: {
+            display: true,
+            position: 'top'
+          },
+          tooltip: {
+            mode: 'index',
+            intersect: false
+          }
+        },
         scales: {
           x: {
             type: 'time',
             time: {
-              unit: 'minute'
+              tooltipFormat: 'HH:mm',
+              displayFormats: {
+                minute: 'HH:mm'
+              }
+            },
+            title: {
+              display: true,
+              text: 'Time'
             }
           },
           y: {
-            beginAtZero: true
+            beginAtZero: true,
+            title: {
+              display: true,
+              text: 'Values'
+            }
           }
         }
       }
-    };
+    });
 
-    const myChart = new Chart(ctx, config);
-
-    // Animate by interval
-    let i = 0;
-    const interval = setInterval(() => {
-      if (i >= data.length) {
-        clearInterval(interval);
-        return;
-      }
-
-      const point = data[i];
-      console.log("data[i] at index", i, "is", data[i]);
-      chartData.labels.push(new Date(point.timestamp));
-      chartData.datasets[0].data.push(point.value);
-      myChart.update();
-
-      i++;
-    }, 100); // Adjust speed (300ms per point)
+    // Start animation
+    animateNextPoint();
+  })
+  .catch(error => {
+    console.error('Error loading data:', error);
   });
+
+function animateNextPoint() {
+  const interval = setInterval(() => {
+    if (currentIndex >= allData.length) {
+      clearInterval(interval);
+      return;
+    }
+
+    const point = allData[currentIndex];
+    const ts = point.timestamp;
+
+    if (!ts || isNaN(new Date(ts))) {
+      console.warn(`Skipping invalid timestamp at index ${currentIndex}:`, ts);
+      currentIndex++;
+      return;
+    }
+
+    chart.data.datasets[0].data.push({ x: ts, y: point.value });
+    chart.data.datasets[1].data.push({ x: ts, y: point.smooth });
+
+    chart.update();
+    currentIndex++;
+  }, 500);
+}
