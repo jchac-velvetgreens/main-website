@@ -50,5 +50,5 @@ fetch('data.json')
       myChart.update();
 
       i++;
-    }, 300); // Adjust speed (300ms per point)
+    }, 100); // Adjust speed (300ms per point)
   });
