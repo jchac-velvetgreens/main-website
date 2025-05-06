@@ -44,6 +44,7 @@ fetch('data.json')
       }
 
       const point = data[i];
+      console.log("data[i] at index", i, "is", data[i]);
       chartData.labels.push(new Date(point.timestamp));
       chartData.datasets[0].data.push(point.value);
       myChart.update();
